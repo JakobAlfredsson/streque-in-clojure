@@ -6,8 +6,8 @@
             [streque.view.app :refer [app-component]]))
 
 (defn render!
-  []
-  (reagent-dom/render [app-component nil]
+  [] ;
+  (reagent-dom/render (app-component nil)
                       (dom/get-app-element)))
 
 

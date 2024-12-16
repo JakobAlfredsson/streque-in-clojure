@@ -5,4 +5,4 @@
   [db]
   [:div
    [:h1 {:id "header-id"}
-    "Game of life"]])
+    "Test"]])
