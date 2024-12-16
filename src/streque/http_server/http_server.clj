@@ -1,13 +1,8 @@
-(ns streque.http-server.http-server
+(ns http-server.http-server
   (:require [org.httpkit.server :as httpkit]
             [streque.http-server.end-points :refer [handler]]))
 
 (defonce server-atom (atom nil))
-
-(defn app [req]
-  {:status  200
-   :headers {"Content-Type" "text/html"}
-   :body    "hello HTTP!"})
 
 (defn start-server!
   []
@@ -16,7 +11,7 @@
     (do (println "starting server")
         (let [server-stop-fn (httpkit/run-server (fn [request]
                                                    (handler request))
-                                                 {:port 8001})]
+                                                 {:port 9499})]
           (reset! server-atom server-stop-fn)))))
 
 (defn stop-server!

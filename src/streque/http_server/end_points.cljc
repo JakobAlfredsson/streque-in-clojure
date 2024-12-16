@@ -6,4 +6,4 @@
     (cond
       :else {:status  200
              :headers {"Content-Type" "text/html"}
-             :body    "<h1>hello</h1>"})))
+             :body    ""})))
