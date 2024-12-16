@@ -1,0 +1,7 @@
+/.idea/
+/.cpcache/
+/.rebel_readline_history
+*.iml
+/target/
+/resources/public/js/main.js
+/.nrepl-port

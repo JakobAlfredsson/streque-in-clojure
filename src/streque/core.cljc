@@ -1,3 +1,11 @@
-(ns streque.core)
+(ns streque.core
+  (:require [clojure.test :refer [is]]))
 
-(println "Hello world!")
+(defn print-hello
+  {:test (fn []
+           (is (= 1 1) "1 is 1"))}
+  []
+  {:a 1
+   :b 2})
+
+(print-hello)
