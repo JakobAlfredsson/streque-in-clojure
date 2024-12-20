@@ -2,7 +2,6 @@
   (:require [reagent.dom :as reagent-dom]
             [streque.view.dom :as dom]
             [streque.core :as core]
-            [streque.db :as db]
             [streque.view.app :refer [app-component]]))
 
 (defn render!
