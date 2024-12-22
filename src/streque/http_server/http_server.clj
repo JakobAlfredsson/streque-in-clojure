@@ -1,4 +1,4 @@
-(ns http-server.http-server
+(ns streque.http-server.http-server
   (:require [org.httpkit.server :as httpkit]
             [streque.http-server.end-points :refer [handler]]))
 
@@ -16,14 +16,13 @@
 
 (defn stop-server!
   []
-  (do (println "stopping server")
-      (let [server-stop-fn (deref server-atom)]
-        (if server-stop-fn
-          (do (server-stop-fn :timeout 100)
-              (reset! server-atom nil))
-          "The server is not running"))))
+  (println "stopping server")
+  (let [server-stop-fn (deref server-atom)]
+    (if server-stop-fn
+      (do (server-stop-fn :timeout 100)
+          (reset! server-atom nil))
+      "The server is not running")))
 
 (comment
   (start-server!)
-  (stop-server!)
-  )
+  (stop-server!))

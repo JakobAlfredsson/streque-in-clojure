@@ -1,5 +1,12 @@
 (ns streque.core
-  (:require [clojure.test :refer [is]]))
+  (:require [clojure.test :refer [is]]
+            [streque.db :as db]
+            [streque.db-mapper :refer [db-user->user]]))
+
+(defn get-all-users
+  [db]
+  (->> (db/get-all-users db)
+      (map db-user->user)))
 
 (defn create-user
   {:test (fn []
