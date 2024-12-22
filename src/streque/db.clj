@@ -1,23 +1,7 @@
 (ns streque.db
   (:require [datomic.client.api :as d]
-            [clojure.walk]))
-
-; (require '[datomic.client.api :as d])
-(def client (d/client {:server-type :datomic-local
-                       :storage-dir :mem
-                       :system "ci"}))
-
-(def conn (d/connect client {:db-name "streque"}))
-
-(def db (d/db conn))
-
-(def entity-schema [{:db/ident :entity/type
-                     :db/valueType :db.type/keyword
-                     :db/cardinality :db.cardinality/one
-                     :db/doc "Entity type"}])
-
-(def entities [{:entity/type :entity/user}
-               {:entity/type :entity/quote}])
+            [clojure.walk]
+            [clojure.test :refer [is]]))
 
 (def user-schema [{:db/ident :user/id
                    :db/valueType :db.type/string
@@ -61,37 +45,61 @@
                     :db/cardinality :db.cardinality/one
                     :db/doc "The user who uploaded the quote"}])
 
-(def test-users [{:user/id "u1"
-                  :user/first-name "Jakob"
-                  :user/last-name "Alfredsson"
-                  :user/display-name "K-cob"}
+; --------------------------------------------------
+;            Start "production" database
+; --------------------------------------------------
+(def client (d/client {:server-type :datomic-local
+                       :storage-dir :mem
+                       :system "ci"}))
+(d/create-database client {:db-name "streque"})
+(def connection (d/connect client {:db-name "streque"}))
+(def db (d/db connection))
+; --------------------------------------------------
 
-                 {:user/id "u2"
-                  :user/first-name "Test"
-                  :user/last-name "Testsson"
-                  :user/display-name "Tester"}])
-
-(def test-quotes [{:quote/id "q1"
-                   :quote/quote "Arbitrary quote 1..."
-                   :quote/said-by "Jakob"
-                   :quote/uploaded-by "u1"}
-
-                  {:quote/id "q2"
-                   :quote/quote "Arbitrary quote 2..."
-                   :quote/said-by "Tester"
-                   :quote/uploaded-by "u2"}])
-
-(defn dissoc-db-id
-  [entity]
-  (dissoc entity :db/id))
+; --------------------------------------------------
+;               Start local-test-db
+; --------------------------------------------------
+(def local-test-client (d/client
+                        {:server-type :datomic-local
+                         :storage-dir :mem
+                         :system "ci"}))
+(def local-test-db-arg-map {:db-name "local-test-db"})
+(d/create-database local-test-client local-test-db-arg-map)
+(def local-test-connection (d/connect local-test-client local-test-db-arg-map))
+(def local-test-db (d/with-db local-test-connection))
+(d/transact local-test-connection {:tx-data user-schema})
+(d/transact local-test-connection {:tx-data quote-schema})
+; --------------------------------------------------
 
 (defn add-user!
   "Adds the user as specified by the user-map to the database that is connected via conn."
-  [conn user-map]
-  (d/transact conn {:tx-data [user-map]}))
+  [connection user-map]
+  (d/transact connection {:tx-data [user-map]}))
 
 (defn get-user
-  "Gets the user with the given user-id from the database including :db/id."
+  "Gets the entity where (= user-id (:user/id entity) from the database."
+  {:test (fn []
+           (is (= 1
+                  (-> (d/with local-test-db
+                              {:tx-data [[:db/add 1 :user/id "u1"]
+                                         [:db/add 2 :user/id "u2"]]})
+                      (:db-after)
+                      (get-user "u1")))
+               "Gets the correct user if it exists.")
+           (is (= nil
+                  (-> (d/with local-test-db {:tx-data [[:db/add 1 :user/id "u1"]]})
+                      (:db-after)
+                      (get-user "u2")))
+               "Returns nil if the user doesn't exist.")
+           (is (= #:user{:first-name "Test"
+                         :last-name "Testsson"}
+                  (as-> local-test-db $
+                    (d/with $ {:tx-data [[:db/add 1 :user/id "u1"]
+                                         [:db/add 1 :user/first-name "Test"]
+                                         [:db/add 1 :user/last-name "Testsson"]]})
+                    (:db-after $)
+                    (d/pull $ '[:user/first-name :user/last-name] (get-user $ "u1"))))
+               "Can retrieve attributes of the user."))}
   [db user-id]
   (let [get-user-q '[:find ?e
                      :in $ ?user-id
@@ -109,11 +117,11 @@
 
 (defn add-quote!
   "Adds the quote as specified by the quote-map to the database that is connected via conn."
-  [conn uploading-user-id quote-map]
-  (let [db (d/db conn)
+  [connection uploading-user-id quote-map]
+  (let [db (d/db connection)
         uploading-user (get-user db uploading-user-id)
         quote-map (merge quote-map {:quote/uploaded-by uploading-user})]
-    (d/transact conn {:tx-data [quote-map]})))
+    (d/transact connection {:tx-data [quote-map]})))
 
 (defn get-quote
   "Gets the quote with the given quote-id from the database."
@@ -129,20 +137,15 @@
   ; https://docs.datomic.com/client-api/datomic.client.api.html
   ; https://docs.datomic.com/clojure/index.html#datomic.api/entity
   ; https://stackoverflow.com/questions/14189647/get-all-fields-from-a-datomic-entity
-  (d/create-database client {:db-name "streque"})
-  (d/transact conn {:tx-data entity-schema})
-  (d/transact conn {:tx-data entities})
 
-  (d/transact conn {:tx-data user-schema})
-  (d/transact conn {:tx-data test-users})
-  (add-user! conn {:user/id "u3"
-                   :user/display-name "Test"})
+  (d/transact connection {:tx-data user-schema})
+  (add-user! connection {:user/id "u3"
+                         :user/display-name "Test"})
   (get-user db "u1")
   (d/pull db '[*] (get-user db "u1"))
 
-  (d/transact conn {:tx-data quote-schema})
-  (d/transact conn {:tx-data test-quotes})
-  (add-quote! conn "u1" {:quote/id "q3" :quote/quote "Test-quote"})
+  (d/transact connection {:tx-data quote-schema})
+  (add-quote! connection "u1" {:quote/id "q3" :quote/quote "Test-quote"})
   (get-quote db "q3")
   (d/pull db '[*] (get-quote db "q3"))
   (d/pull db '[:quote/_uploaded-by] (get-user db "u1"))
@@ -150,8 +153,6 @@
   (:db/id (:quote/uploaded-by (d/pull db '[:quote/uploaded-by] (get-quote db "q3"))))
   (d/pull db '[*] (:db/id (:quote/uploaded-by (d/pull db '[:quote/uploaded-by] (get-quote db "q3")))))
 
-
-
   (d/datoms db {:index :eavt})
-  ; (get-all-entities db)
+
   (d/delete-database client {:db-name "streque"}))
