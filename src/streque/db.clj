@@ -22,7 +22,12 @@
                   {:db/ident :user/display-name
                    :db/valueType :db.type/string
                    :db/cardinality :db.cardinality/one
-                   :db/doc "The display name of the user"}])
+                   :db/doc "The display name of the user"}
+
+                  {:db/ident :user/balance
+                   :db/valueType :db.type/float
+                   :db/cardinality :db.cardinality/one
+                   :db/doc "The balance of the user"}])
 
 (def quote-schema [{:db/ident :quote/id
                     :db/valueType :db.type/string
@@ -45,30 +50,47 @@
                     :db/cardinality :db.cardinality/one
                     :db/doc "The user who uploaded the quote"}])
 
+(def initial-local-dev-db [{:user/id "u1"
+                            :user/first-name "Jakob"
+                            :user/last-name "Alfredsson"
+                            :user/display-name "K-cob"
+                            :user/balance 200.0}
+
+                           {:user/id "u2"
+                            :user/first-name "Anton"
+                            :user/last-name "Grensjö"
+                            :user/display-name "Thotte"
+                            :user/balance 1500.0}])
+
 ; --------------------------------------------------
-;            Start "production" database
+;               Start local dev-database
 ; --------------------------------------------------
-(def client (d/client {:server-type :datomic-local
-                       :storage-dir :mem
-                       :system "ci"}))
-(d/create-database client {:db-name "streque"})
-(def connection (d/connect client {:db-name "streque"}))
-(def db (d/db connection))
+(def local-dev-client (d/client {:server-type :datomic-local
+                                 :storage-dir :mem
+                                 :system "ci"}))
+(def local-dev-db-arg-map {:db-name "local-dev-db"})
+(d/create-database local-dev-client local-dev-db-arg-map)
+(def local-dev-connection (d/connect local-dev-client local-dev-db-arg-map))
+(def db (d/db local-dev-connection))
+(d/transact local-dev-connection {:tx-data user-schema})
+(d/transact local-dev-connection {:tx-data quote-schema})
+
+(d/transact local-dev-connection {:tx-data initial-local-dev-db})
 ; --------------------------------------------------
 
 ; --------------------------------------------------
-;               Start local-test-db
+;            Start database for unit tests
 ; --------------------------------------------------
-(def local-test-client (d/client
-                        {:server-type :datomic-local
-                         :storage-dir :mem
-                         :system "ci"}))
-(def local-test-db-arg-map {:db-name "local-test-db"})
-(d/create-database local-test-client local-test-db-arg-map)
-(def local-test-connection (d/connect local-test-client local-test-db-arg-map))
-(def local-test-db (d/with-db local-test-connection))
-(d/transact local-test-connection {:tx-data user-schema})
-(d/transact local-test-connection {:tx-data quote-schema})
+(def unit-test-client (d/client
+                       {:server-type :datomic-local
+                        :storage-dir :mem
+                        :system "ci"}))
+(def unit-test-db-arg-map {:db-name "unit-test-db"})
+(d/create-database unit-test-client unit-test-db-arg-map)
+(def unit-test-connection (d/connect unit-test-client unit-test-db-arg-map))
+(def unit-test-db (d/with-db unit-test-connection))
+(d/transact unit-test-connection {:tx-data user-schema})
+(d/transact unit-test-connection {:tx-data quote-schema})
 ; --------------------------------------------------
 
 (defn add-user!
@@ -80,20 +102,20 @@
   "Gets the entity where (= user-id (:user/id entity) from the database."
   {:test (fn []
            (is (= 1
-                  (-> (d/with local-test-db
+                  (-> (d/with unit-test-db
                               {:tx-data [[:db/add 1 :user/id "u1"]
                                          [:db/add 2 :user/id "u2"]]})
                       (:db-after)
                       (get-user "u1")))
                "Gets the correct user if it exists.")
            (is (= nil
-                  (-> (d/with local-test-db {:tx-data [[:db/add 1 :user/id "u1"]]})
+                  (-> (d/with unit-test-db {:tx-data [[:db/add 1 :user/id "u1"]]})
                       (:db-after)
                       (get-user "u2")))
                "Returns nil if the user doesn't exist.")
            (is (= #:user{:first-name "Test"
                          :last-name "Testsson"}
-                  (as-> local-test-db $
+                  (as-> unit-test-db $
                     (d/with $ {:tx-data [[:db/add 1 :user/id "u1"]
                                          [:db/add 1 :user/first-name "Test"]
                                          [:db/add 1 :user/last-name "Testsson"]]})
@@ -109,6 +131,21 @@
 
 (defn get-all-users
   "Gets all entities with a :user/id from the database."
+  {:test (fn []
+           (is (= 2
+                  (-> (d/with unit-test-db
+                              {:tx-data [[:db/add 1 :user/id "u1"]
+                                         [:db/add 2 :user/id "u2"]]})
+                      (:db-after)
+                      (get-all-users)
+                      (count)))
+               "Finds all users")
+           (is (= []
+                  (-> (d/with unit-test-db
+                              {:tx-data []})
+                      (:db-after)
+                      (get-all-users)))
+               "Returns an empty list if there are no users"))}
   [db]
   (let [get-all-users-q '[:find (pull ?user [*])
                           :where [?user :user/id _]]]
@@ -138,14 +175,14 @@
   ; https://docs.datomic.com/clojure/index.html#datomic.api/entity
   ; https://stackoverflow.com/questions/14189647/get-all-fields-from-a-datomic-entity
 
-  (d/transact connection {:tx-data user-schema})
-  (add-user! connection {:user/id "u3"
-                         :user/display-name "Test"})
+  (d/transact local-dev-connection {:tx-data user-schema})
+  (add-user! local-dev-connection {:user/id "u3"
+                                   :user/display-name "Test"})
   (get-user db "u1")
   (d/pull db '[*] (get-user db "u1"))
 
-  (d/transact connection {:tx-data quote-schema})
-  (add-quote! connection "u1" {:quote/id "q3" :quote/quote "Test-quote"})
+  (d/transact local-dev-connection {:tx-data quote-schema})
+  (add-quote! local-dev-connection "u1" {:quote/id "q3" :quote/quote "Test-quote"})
   (get-quote db "q3")
   (d/pull db '[*] (get-quote db "q3"))
   (d/pull db '[:quote/_uploaded-by] (get-user db "u1"))
@@ -155,4 +192,4 @@
 
   (d/datoms db {:index :eavt})
 
-  (d/delete-database client {:db-name "streque"}))
+  (d/delete-database local-dev-client {:db-name "streque"}))
