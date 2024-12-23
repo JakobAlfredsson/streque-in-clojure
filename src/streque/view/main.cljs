@@ -1,13 +1,14 @@
 (ns ^:figwheel-hooks streque.view.main
   (:require [reagent.dom :as reagent-dom]
             [streque.view.dom :as dom]
-            [streque.view.app :refer [app-component]]))
+            [streque.view.app :refer [app-component]]
+            [streque.view.state :as state]))
 
-(def state-atom (atom {}))
+
 
 (defn render!
   [] ;
-  (reagent-dom/render (app-component (deref state-atom))
+  (reagent-dom/render (app-component (deref state/state-atom))
                       (dom/get-app-element)))
 
 
@@ -19,7 +20,7 @@
 ;;                                 :screen
 ;;                                 (dom/get-screen-size))))
 
-; (add-watch db/db-atom :watcher (fn [_ _ _ _] (render!)))
+ (add-watch state/state-atom :watcher (fn [_ _ _ _] (render!)))
 
 ;;   (reset! db/db-atom {:states (list (core/create-state ["##"
 ;;                                                         "###"
