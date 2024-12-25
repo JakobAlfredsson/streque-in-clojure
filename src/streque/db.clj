@@ -71,10 +71,9 @@
 (def local-dev-db-arg-map {:db-name "local-dev-db"})
 (d/create-database local-dev-client local-dev-db-arg-map)
 (def local-dev-connection (d/connect local-dev-client local-dev-db-arg-map))
-(def db (d/db local-dev-connection))
+(def local-dev-db (d/db local-dev-connection))
 (d/transact local-dev-connection {:tx-data user-schema})
 (d/transact local-dev-connection {:tx-data quote-schema})
-
 (d/transact local-dev-connection {:tx-data initial-local-dev-db})
 ; --------------------------------------------------
 
@@ -178,18 +177,18 @@
   (d/transact local-dev-connection {:tx-data user-schema})
   (add-user! local-dev-connection {:user/id "u3"
                                    :user/display-name "Test"})
-  (get-user db "u1")
-  (d/pull db '[*] (get-user db "u1"))
+  (get-user local-dev-db "u1")
+  (d/pull local-dev-db '[*] (get-user local-dev-db "u1"))
 
   (d/transact local-dev-connection {:tx-data quote-schema})
   (add-quote! local-dev-connection "u1" {:quote/id "q3" :quote/quote "Test-quote"})
-  (get-quote db "q3")
-  (d/pull db '[*] (get-quote db "q3"))
-  (d/pull db '[:quote/_uploaded-by] (get-user db "u1"))
-  (d/pull db '[* {[:quote/_uploaded-by] [:quote/id :quote/quote]}] (get-user db "u1"))
-  (:db/id (:quote/uploaded-by (d/pull db '[:quote/uploaded-by] (get-quote db "q3"))))
-  (d/pull db '[*] (:db/id (:quote/uploaded-by (d/pull db '[:quote/uploaded-by] (get-quote db "q3")))))
+  (get-quote local-dev-db "q3")
+  (d/pull local-dev-db '[*] (get-quote local-dev-db "q3"))
+  (d/pull local-dev-db '[:quote/_uploaded-by] (get-user local-dev-db "u1"))
+  (d/pull local-dev-db '[* {[:quote/_uploaded-by] [:quote/id :quote/quote]}] (get-user local-dev-db "u1"))
+  (:db/id (:quote/uploaded-by (d/pull local-dev-db '[:quote/uploaded-by] (get-quote local-dev-db "q3"))))
+  (d/pull local-dev-db '[*] (:db/id (:quote/uploaded-by (d/pull local-dev-db '[:quote/uploaded-by] (get-quote local-dev-db "q3")))))
 
-  (d/datoms db {:index :eavt})
+  (d/datoms local-dev-db {:index :eavt})
 
   (d/delete-database local-dev-client {:db-name "streque"}))
