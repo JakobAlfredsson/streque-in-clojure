@@ -8,5 +8,5 @@
            com.datomic/local         {:mvn/version "1.0.285"}
            com.datomic/client-cloud  {:mvn/version "1.0.130"}}
  :aliases {:fig {:main-opts ["-m" "figwheel.main"]}}
+ :dev  {:main-opts ["-m" "figwheel.main" "-co" "dev.build.edn" "-b" "dev" "-r"]}
  :paths   ["src" "resources" "target"]}
-
