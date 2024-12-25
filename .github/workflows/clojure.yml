@@ -30,6 +30,6 @@ jobs:
     
     
     - name: Install dependencies
-      run: clj -T:build uber
+      run: clojure -T:build uber
     - name: Run tests
-      run: clj -X:test
+      run: clojure -X:test
