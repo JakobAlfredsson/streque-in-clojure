@@ -7,6 +7,11 @@
            cljsjs/react-dom          {:mvn/version "18.3.1-1"}
            com.datomic/local         {:mvn/version "1.0.285"}
            com.datomic/client-cloud  {:mvn/version "1.0.130"}}
- :aliases {:fig {:main-opts ["-m" "figwheel.main"]}}
+ :aliases {:fig {:main-opts ["-m" "figwheel.main"]}
+           :build {:deps {io.github.clojure/tools.build {:mvn/version "0.9.6"}}
+                   :ns-default build}
+           :test {:ns-default all-tests
+                  :extra-paths ["test"]
+                  :exec-fn run-all-tests}}
  :dev  {:main-opts ["-m" "figwheel.main" "-co" "dev.build.edn" "-b" "dev" "-r"]}
  :paths   ["src" "resources" "target"]}
