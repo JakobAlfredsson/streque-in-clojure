@@ -71,10 +71,10 @@
 (def local-dev-db-arg-map {:db-name "local-dev-db"})
 (d/create-database local-dev-client local-dev-db-arg-map)
 (def local-dev-connection (d/connect local-dev-client local-dev-db-arg-map))
-(def local-dev-db (d/db local-dev-connection))
 (d/transact local-dev-connection {:tx-data user-schema})
 (d/transact local-dev-connection {:tx-data quote-schema})
 (d/transact local-dev-connection {:tx-data initial-local-dev-db})
+(def local-dev-db (d/db local-dev-connection))
 ; --------------------------------------------------
 
 ; --------------------------------------------------
@@ -87,9 +87,9 @@
 (def unit-test-db-arg-map {:db-name "unit-test-db"})
 (d/create-database unit-test-client unit-test-db-arg-map)
 (def unit-test-connection (d/connect unit-test-client unit-test-db-arg-map))
-(def unit-test-db (d/with-db unit-test-connection))
 (d/transact unit-test-connection {:tx-data user-schema})
 (d/transact unit-test-connection {:tx-data quote-schema})
+(def unit-test-db (d/with-db unit-test-connection))
 ; --------------------------------------------------
 
 (defn add-user!
