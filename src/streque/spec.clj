@@ -12,9 +12,13 @@
 
 (s/def ::user (s/keys :req-un [::id
                                ::first-name
-                               ::last-name]
-                      :opt-un [::display-name
-                               ::balance]))
+                               ::last-name
+                               ::balance]
+                      :opt-un [::display-name]))
 
 ; http-User
-(s/def ::http-user ::user) ; Place holder until http-user and user diverge in terms of requirements
+(s/def ::http-user (s/keys :req-un [::id]
+                           :opt-un [::first-name
+                                    ::last-name
+                                    ::display-name
+                                    ::balance]))

@@ -12,7 +12,9 @@
                    :ns-default build
                    :extra-paths ["."]}
            :test {:ns-default all-tests
+                  :extra-deps {org.clojure/test.check {:mvn/version "0.9.0"}}
                   :extra-paths ["test"]
-                  :exec-fn run-all-tests}}
+                  :exec-fn run-all-tests}
+           :dev {:extra-deps {org.clojure/test.check {:mvn/version "0.9.0"}}}}
  :dev  {:main-opts ["-m" "figwheel.main" "-co" "dev.build.edn" "-b" "dev" "-r"]}
  :paths   ["src" "resources" "target"]}
