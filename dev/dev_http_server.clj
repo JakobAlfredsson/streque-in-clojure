@@ -1,4 +1,4 @@
-(ns streque.http-server.http-server
+(ns dev-http-server
   (:require [org.httpkit.server :as httpkit]
             [streque.http-server.end-points :refer [handler]]))
 

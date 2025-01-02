@@ -1,8 +1,7 @@
 (ns streque.edn-api
-  (:require [streque.core :as core]
-            [streque.db :as db]))
+  (:require [streque.core :as core]))
 
-(defonce db-atom (atom db/local-dev-db))
+(defonce db-atom (atom nil))
 
 (defn get-all-users
   []

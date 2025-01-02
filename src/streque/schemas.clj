@@ -1,4 +1,4 @@
-(ns streque.db
+(ns streque.schemas
   (:require [datomic.client.api :as d]
             [clojure.walk]))
 

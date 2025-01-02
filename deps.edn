@@ -1,7 +1,6 @@
 {:deps    {org.clojure/clojurescript {:mvn/version "1.11.54"}
            org.clojure/clojure       {:mvn/version "1.12.0"}
            com.bhauman/figwheel-main {:mvn/version "0.2.18"}
-           http-kit/http-kit         {:mvn/version "2.9.0-alpha1"}
            reagent/reagent           {:mvn/version "1.2.0"}
            cljsjs/react              {:mvn/version "18.3.1-1"}
            cljsjs/react-dom          {:mvn/version "18.3.1-1"}
@@ -11,10 +10,14 @@
            :build {:replace-deps {io.github.clojure/tools.build {:mvn/version "0.9.6"}}
                    :ns-default build
                    :extra-paths ["."]}
-           :test {:ns-default all-tests
-                  :extra-deps {org.clojure/test.check {:mvn/version "0.9.0"}}
+           :test {:extra-deps {org.clojure/test.check {:mvn/version "0.9.0"}}
                   :extra-paths ["test"]
+                  :ns-default test
                   :exec-fn run-all-tests}
-           :dev {:extra-deps {org.clojure/test.check {:mvn/version "0.9.0"}}}}
+           :dev {:extra-deps {org.clojure/test.check {:mvn/version "0.9.0"}
+                              http-kit/http-kit      {:mvn/version "2.9.0-alpha1"}}
+                 :extra-paths ["dev" "test"]
+                 :ns-default dev
+                 :exec-fn initialize-dev-environment!}}
  :dev  {:main-opts ["-m" "figwheel.main" "-co" "dev.build.edn" "-b" "dev" "-r"]}
  :paths   ["src" "resources" "target"]}

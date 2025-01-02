@@ -1,6 +1,6 @@
-(ns all-tests
+(ns test
   (:require [clojure.test  :as t]
-            [streque.db]
+            [streque.schemas]
             [streque.edn-api]
             [streque.http-server.mapper]))
 
