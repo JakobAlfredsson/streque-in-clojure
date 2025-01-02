@@ -3,8 +3,8 @@
             [datomic.client.api :as d]
             [streque.schemas :as schemas]
             ;[dev-db]
-            [test-db :refer [unit-test-connection
-                             unit-test-db]]
+            [streque.unit-test-db :refer [unit-test-connection
+                                          unit-test-db]]
             [streque.db-mapper :refer [db-user->user]]))
 
 (defn get-all-users
@@ -151,4 +151,4 @@
   ;; (d/datoms dev-db/db {:index :eavt})
 
   ;; (d/delete-database dev-db/client {:db-name "streque"}))
-)
+  )

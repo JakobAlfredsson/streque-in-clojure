@@ -1,4 +1,4 @@
-(ns test-db
+(ns streque.unit-test-db
   (:require [datomic.client.api :as d]
             [streque.schemas :as schemas]))
 
