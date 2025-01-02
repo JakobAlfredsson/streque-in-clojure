@@ -1,14 +1,17 @@
 (ns streque.core
-  (:require [clojure.test :refer [is]] 
+  (:require [clojure.test :refer [is]]
             [datomic.client.api :as d]
-            [streque.db :as db]
+            [streque.schemas :as schemas]
+            ;[dev-db]
+            [streque.unit-test-db :refer [unit-test-connection
+                                          unit-test-db]]
             [streque.db-mapper :refer [db-user->user]]))
 
 (defn get-all-users
   "Gets all entities with a :user/id from the database."
   {:test (fn []
            (is (= 2
-                  (-> (d/with db/unit-test-db
+                  (-> (d/with unit-test-db
                               {:tx-data [[:db/add 1 :user/id "u1"]
                                          [:db/add 2 :user/id "u2"]]})
                       (:db-after)
@@ -16,7 +19,7 @@
                       (count)))
                "Finds all users")
            (is (= []
-                  (-> (d/with db/unit-test-db
+                  (-> (d/with unit-test-db
                               {:tx-data []})
                       (:db-after)
                       (get-all-users)))
@@ -39,20 +42,20 @@
   "Gets the entity where (= user-id (:user/id entity)) from the database."
   {:test (fn []
            (is (= 1
-                  (-> (d/with db/unit-test-db
+                  (-> (d/with unit-test-db
                               {:tx-data [[:db/add 1 :user/id "u1"]
                                          [:db/add 2 :user/id "u2"]]})
                       (:db-after)
                       (get-user "u1")))
                "Gets the correct user if it exists.")
            (is (= nil
-                  (-> (d/with db/unit-test-db {:tx-data [[:db/add 1 :user/id "u1"]]})
+                  (-> (d/with unit-test-db {:tx-data [[:db/add 1 :user/id "u1"]]})
                       (:db-after)
                       (get-user "u2")))
                "Returns nil if the user doesn't exist.")
            (is (= #:user{:first-name "Test"
                          :last-name "Testsson"}
-                  (as-> db/unit-test-db $
+                  (as-> unit-test-db $
                     (d/with $ {:tx-data [[:db/add 1 :user/id "u1"]
                                          [:db/add 1 :user/first-name "Test"]
                                          [:db/add 1 :user/last-name "Testsson"]]})
@@ -129,21 +132,23 @@
   ; https://docs.datomic.com/clojure/index.html#datomic.api/entity
   ; https://stackoverflow.com/questions/14189647/get-all-fields-from-a-datomic-entity
 
-  (d/transact db/local-dev-connection {:tx-data db/user-schema})
-  (add-user! db/local-dev-connection {:user/id "u3"
-                                   :user/display-name "Test"})
-  (get-user db/local-dev-db "u1")
-  (d/pull db/local-dev-db '[*] (get-user db/local-dev-db "u1"))
+  ; The references to the connection and the db are likely wrong.
+  ;; (d/transact dev-db/connection {:tx-data schemas/user-schema})
+  ;; (add-user! dev-db/connection {:user/id "u3"
+  ;;                                     :user/display-name "Test"})
+  ;; (get-user dev-db/db "u1")
+  ;; (d/pull dev-db/db '[*] (get-user dev-db/db "u1"))
 
-  (d/transact db/local-dev-connection {:tx-data db/quote-schema})
-  (add-quote! db/local-dev-connection "u1" {:quote/id "q3" :quote/quote "Test-quote"})
-  (get-quote db/local-dev-db "q3")
-  (d/pull db/local-dev-db '[*] (get-quote db/local-dev-db "q3"))
-  (d/pull db/local-dev-db '[:quote/_uploaded-by] (get-user db/local-dev-db "u1"))
-  (d/pull db/local-dev-db '[* {[:quote/_uploaded-by] [:quote/id :quote/quote]}] (get-user db/local-dev-db "u1"))
-  (:db/id (:quote/uploaded-by (d/pull db/local-dev-db '[:quote/uploaded-by] (get-quote db/local-dev-db "q3"))))
-  (d/pull db/local-dev-db '[*] (:db/id (:quote/uploaded-by (d/pull db/local-dev-db '[:quote/uploaded-by] (get-quote db/local-dev-db "q3")))))
+  ;; (d/transact dev-db/connection {:tx-data schemas/quote-schema})
+  ;; (add-quote! dev-db/connection "u1" {:quote/id "q3" :quote/quote "Test-quote"})
+  ;; (get-quote dev-db/db "q3")
+  ;; (d/pull dev-db/db '[*] (get-quote dev-db/db "q3"))
+  ;; (d/pull dev-db/db '[:quote/_uploaded-by] (get-user dev-db/db "u1"))
+  ;; (d/pull dev-db/db '[* {[:quote/_uploaded-by] [:quote/id :quote/quote]}] (get-user dev-db/db "u1"))
+  ;; (:db/id (:quote/uploaded-by (d/pull dev-db/db '[:quote/uploaded-by] (get-quote dev-db/db "q3"))))
+  ;; (d/pull dev-db/db '[*] (:db/id (:quote/uploaded-by (d/pull dev-db/db '[:quote/uploaded-by] (get-quote dev-db/db "q3")))))
 
-  (d/datoms db/local-dev-db {:index :eavt})
+  ;; (d/datoms dev-db/db {:index :eavt})
 
-  (d/delete-database db/local-dev-client {:db-name "streque"}))
+  ;; (d/delete-database dev-db/client {:db-name "streque"}))
+  )
