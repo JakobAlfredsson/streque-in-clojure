@@ -16,6 +16,13 @@
        :body (->> (edn-api/get-all-users)
                   (map mapper/user->http-user)
                   (json/write-str))}
+      
+      (= uri "/get-menu")
+      {:status 200
+       :headers (merge cors-headers {"Content-Type" "application/json"})
+       :body (->> (edn-api/get-menu)
+                  (map mapper/menu->http-menu)
+                  (json/write-str))}
 
       :else {:status  200
              :headers {"Content-Type" "text/html"}

@@ -36,6 +36,20 @@
   :ret :streque.spec/user
   :fn #(= (:ret %) (-> % :args :user)))
 
+(defn menu->http-menu
+  [menu]
+  {:pre [(s/valid? :streque.spec/menu menu)]
+   :post [(s/valid? :streque.spec/http-menu %)]}
+  (let [required-fields {:id (:id menu)
+                         :name (:name menu)
+                         :price (:price menu)}]
+    required-fields))
+
+(s/fdef menu->http-menu
+  :args (s/cat :user :streque.spec/menu)
+  :ret :streque.spec/menu
+  :fn #(= (:ret %) (-> % :args :user)))
+
 
 
 (comment

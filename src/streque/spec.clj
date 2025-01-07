@@ -3,6 +3,7 @@
 
 ; General specs
 (s/def ::id string?)
+(s/def ::name string?)
 
 ; User
 (s/def ::first-name string?)
@@ -22,3 +23,15 @@
                                     ::last-name
                                     ::display-name
                                     ::balance]))
+; Menu
+(s/def ::price number?)
+(s/def ::menu-item (s/keys :req-un [::id
+                               ::name
+                               ::price]))
+(s/def ::menu (s/coll-of ::menu-item))
+
+; http-menu
+(s/def ::http-menu-item (s/keys :req-un [::id
+                                    ::name
+                                    ::price]))
+(s/def ::http-menu (s/coll-of ::http-menu-item))
