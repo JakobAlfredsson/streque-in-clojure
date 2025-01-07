@@ -7,3 +7,8 @@
   []
   (let [db (deref db-atom)]
     (core/get-all-users db)))
+
+(defn get-menu
+  []
+  (let [db (deref db-atom)]
+    (core/get-menu db)))

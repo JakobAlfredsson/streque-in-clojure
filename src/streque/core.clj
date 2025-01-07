@@ -32,7 +32,7 @@
          (flatten)
          (map db-user->user))))
 
-(defn get-menu-items
+(defn get-menu
   "Gets all items with a :menu-item/id from the database."
   {:test (fn []
            (is (= 2
@@ -40,7 +40,7 @@
                               {:tx-data [[:db/add 1 :menu-item/id "mi1"]
                                          [:db/add 2 :menu-item/id "mi2"]]})
                       (:db-after)
-                      (get-menu-items)
+                      (get-menu)
                       (count)))
                "Finds all menu-items")
            (is (= []
