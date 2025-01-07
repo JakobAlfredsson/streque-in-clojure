@@ -1,7 +1,7 @@
 (ns streque.core
   (:require [clojure.test :refer [is]]
             [datomic.client.api :as d]
-            [streque.schemas :as schemas]
+            ;[streque.schemas :as schemas]
             ;[dev-db]
             [streque.unit-test-db :refer [unit-test-connection
                                           unit-test-db]]
