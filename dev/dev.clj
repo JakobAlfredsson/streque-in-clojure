@@ -7,3 +7,6 @@
   [_]
   (dev-http-server/start-server!)
   (reset! streque.edn-api/db-atom dev-db/db))
+
+(comment
+  (initialize-dev-environment! {}))
