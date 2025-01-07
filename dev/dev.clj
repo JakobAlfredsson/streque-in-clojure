@@ -1,6 +1,5 @@
 (ns dev
   (:require [dev-db]
-            [test-db]
             [dev-http-server]
             [streque.edn-api]))
 

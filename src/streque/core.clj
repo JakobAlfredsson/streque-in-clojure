@@ -5,7 +5,8 @@
             ;[dev-db]
             [streque.unit-test-db :refer [unit-test-connection
                                           unit-test-db]]
-            [streque.db-mapper :refer [db-user->user]]))
+            [streque.db-mapper :refer [db-user->user
+                                       db-menu-item->menu-item]]))
 
 (defn get-all-users
   "Gets all entities with a :user/id from the database."
@@ -30,6 +31,30 @@
     (->> (d/q get-all-users-q db)
          (flatten)
          (map db-user->user))))
+
+(defn get-menu-items
+  "Gets all items with a :menu-item/id from the database."
+  {:test (fn []
+           (is (= 2
+                  (-> (d/with unit-test-db
+                              {:tx-data [[:db/add 1 :menu-item/id "mi1"]
+                                         [:db/add 2 :menu-item/id "mi2"]]})
+                      (:db-after)
+                      (get-menu-items)
+                      (count)))
+               "Finds all menu-items")
+           (is (= []
+                  (-> (d/with unit-test-db
+                              {:tx-data []})
+                      (:db-after)
+                      (get-all-users)))
+               "Returns an empty list if there are no menu-items"))}
+  [db]
+  (let [get-all-menu-items-q '[:find (pull ?menu-item [*])
+                          :where [?menu-item :menu-item/id _]]]
+    (->> (d/q get-all-menu-items-q db)
+         (flatten)
+         (map db-menu-item->menu-item))))
 
 ; TODO
 (defn add-user!
