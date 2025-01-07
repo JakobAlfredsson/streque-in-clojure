@@ -13,16 +13,16 @@
       (= uri "/get-all-users")
       {:status 200
        :headers (merge cors-headers {"Content-Type" "application/json"})
-       :body (->> (edn-api/get-all-users)
-                  (map mapper/user->http-user)
-                  (json/write-str))}
+       :body (as-> (edn-api/get-all-users) $
+                  (map mapper/user->http-user $)
+                  (json/write-str $ {:escape-unicode false}))}
       
       (= uri "/get-menu")
       {:status 200
        :headers (merge cors-headers {"Content-Type" "application/json"})
-       :body (->> (edn-api/get-menu)
-                  (map mapper/menu->http-menu)
-                  (json/write-str))}
+       :body (as-> (edn-api/get-menu) $
+                  (mapper/menu->http-menu $)
+                  (json/write-str $ {:escape-unicode false}))}
 
       :else {:status  200
              :headers {"Content-Type" "text/html"}
