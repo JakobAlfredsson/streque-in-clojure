@@ -12,7 +12,11 @@
                             :user/first-name "Anton"
                             :user/last-name "Grensjö"
                             :user/display-name "Thotte"
-                            :user/balance 1500.0}])
+                            :user/balance 1500.0}
+                           
+                           {:menu-item/id "mi1"
+                            :menu-item/name "Öl"
+                            :menu-item/price 11.0}])
 
 ; --------------------------------------------------
 ;               Start local dev-database
@@ -25,6 +29,7 @@
 (def connection (d/connect client local-dev-db-arg-map))
 (d/transact connection {:tx-data schemas/user-schema})
 (d/transact connection {:tx-data schemas/quote-schema})
+(d/transact connection {:tx-data schemas/menu-item-schema})
 (d/transact connection {:tx-data initial-local-dev-db})
 (def db (d/db connection))
 ; --------------------------------------------------

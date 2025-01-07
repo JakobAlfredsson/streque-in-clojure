@@ -15,6 +15,7 @@
 (def unit-test-connection (d/connect unit-test-client unit-test-db-arg-map))
 (d/transact unit-test-connection {:tx-data schemas/user-schema})
 (d/transact unit-test-connection {:tx-data schemas/quote-schema})
+(d/transact unit-test-connection {:tx-data schemas/menu-item-schema})
 (def unit-test-db (d/with-db unit-test-connection))
 ; --------------------------------------------------
 
@@ -22,4 +23,5 @@
   []
   (d/create-database unit-test-client unit-test-db-arg-map)
   (d/transact unit-test-connection {:tx-data schemas/user-schema})
-  (d/transact unit-test-connection {:tx-data schemas/quote-schema}))
+  (d/transact unit-test-connection {:tx-data schemas/quote-schema})
+  (d/transact unit-test-connection {:tx-data schemas/menu-item-schema}))

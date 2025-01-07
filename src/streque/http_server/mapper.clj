@@ -36,9 +36,23 @@
   :ret :streque.spec/user
   :fn #(= (:ret %) (-> % :args :user)))
 
+(defn menu->http-menu
+  [menu]
+  {:pre [(s/valid? :streque.spec/menu menu)]
+   :post [(s/valid? :streque.spec/http-menu %)]}
+  (let [get-required-fields (fn [menu-item] {:id (:id menu-item)
+                                             :name (:name menu-item)
+                                             :price (:price menu-item)})]
+    (map get-required-fields menu)))
+
+(s/fdef menu->http-menu
+  :args (s/cat :menu :streque.spec/menu)
+  :ret :streque.spec/menu
+  :fn #(= (:ret %) (-> % :args :menu)))
+
 
 
 (comment
-  (stest/summarize-results (stest/check `user->http-user))
+  (stest/summarize-results (stest/check `menu->http-menu))
   (stest/check) ; This makes my computer unusable for some reason
   )
