@@ -1,3 +1,6 @@
+; May be useful for creating full-stack projects
+; https://github.com/oakes/full-stack-clj-example
+
 {:deps    {org.clojure/clojurescript {:mvn/version "1.11.54"}
            org.clojure/clojure       {:mvn/version "1.12.0"}
            com.bhauman/figwheel-main {:mvn/version "0.2.18"}
@@ -6,8 +9,7 @@
            cljsjs/react-dom          {:mvn/version "18.3.1-1"}
            com.datomic/local         {:mvn/version "1.0.285"}
            com.datomic/client-cloud  {:mvn/version "1.0.130"}}
- :aliases {:fig {:main-opts ["-m" "figwheel.main"]}
-           :build {:replace-deps {io.github.clojure/tools.build {:mvn/version "0.9.6"}}
+ :aliases {:build {:replace-deps {io.github.clojure/tools.build {:mvn/version "0.9.6"}}
                    :ns-default build
                    :extra-paths ["."]}
            :test {:extra-deps {org.clojure/test.check {:mvn/version "0.9.0"}}
@@ -16,8 +18,12 @@
                   :exec-fn run-all-tests}
            :dev {:extra-deps {org.clojure/test.check {:mvn/version "0.9.0"}
                               http-kit/http-kit      {:mvn/version "2.9.0-alpha1"}}
-                 :extra-paths ["dev" "test"]
-                 :ns-default dev
-                 :exec-fn initialize-dev-environment!}}
- :dev  {:main-opts ["-m" "figwheel.main" "-co" "dev.build.edn" "-b" "dev" "-r"]}
+                 :extra-paths ["dev" "test"]}
+           :backend {:ns-default dev
+                     :exec-fn initialize-backend-environment!}
+           :frontend {:ns-default dev
+                     :exec-fn initialize-frontend-environment!}
+           :fullstack {:ns-default dev
+                     :exec-fn initialize-fullstack-environment!}}
+ ;; :dev  {:main-opts ["-m" "figwheel.main" "-co" "dev.build.edn" "-b" "dev" "-r"]}
  :paths   ["src" "resources" "target"]}
