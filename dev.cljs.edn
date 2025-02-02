@@ -1,2 +1,2 @@
-^{:watch-dirs ["src"]}
-{:main streque.view.app}
+^{:watch-dirs ["src/view"]}
+{:main view.main}

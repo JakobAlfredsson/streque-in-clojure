@@ -1,12 +1,7 @@
 ; May be useful for creating full-stack projects
 ; https://github.com/oakes/full-stack-clj-example
 
-{:deps    {;org.clojure/clojurescript {:mvn/version "1.11.54"}
-           org.clojure/clojure       {:mvn/version "1.12.0"}
-           ;com.bhauman/figwheel-main {:mvn/version "0.2.18"}
-           ;reagent/reagent           {:mvn/version "1.2.0"}
-           ;cljsjs/react              {:mvn/version "18.3.1-1"}
-           ;cljsjs/react-dom          {:mvn/version "18.3.1-1"}
+{:deps    {org.clojure/clojure       {:mvn/version "1.12.0"}
            http-kit/http-kit      {:mvn/version "2.9.0-alpha1"}
            com.datomic/local         {:mvn/version "1.0.285"}
            com.datomic/client-cloud  {:mvn/version "1.0.130"}}
@@ -23,6 +18,8 @@
            :dev-calva {:extra-deps {com.bhauman/figwheel-main {:mvn/version "0.2.18"}} 
                        :extra-paths ["dev" "test"]} 
            
+           :fig {:main-opts ["-m" "figwheel.main"]}
+           
            :build {:replace-deps {io.github.clojure/tools.build {:mvn/version "0.9.6"}}
                    :ns-default build
                    :extra-paths ["."]}
@@ -30,14 +27,5 @@
            :test {:extra-deps {org.clojure/test.check {:mvn/version "0.9.0"}}
                   :extra-paths ["test"]
                   :ns-default test
-                  :exec-fn run-all-tests}
-           
-           ;; This isn't working as I would have hoped
-           :calva-DONT-USE {:extra-deps {nrepl/nrepl {:mvn/version,"1.3.1"}
-                                cider/piggieback {:mvn/version,"0.6.0"}
-                                cider/cider-nrepl {:mvn/version,"0.52.0"}
-                                cider/nrepl {:mvn/version,"0.3.0"}}
-                   :extra-paths ["dev"]
-                              ;:main-opts ["-m" "calva" "{}"]
-                   :main-opts ["-m" "figwheel.main" "-b" "dev"]}} 
- :paths   ["src" "resources" "target"]}
+                  :exec-fn run-all-tests}} 
+ :paths   ["src" "resources" "target" "src/view"]}
