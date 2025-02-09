@@ -17,7 +17,7 @@
                   (map mapper/user->http-user $)
                   (json/write-str $ {:escape-unicode false}))}
       
-      (= uri "/get-menu")
+      (= uri "/get-streque-menu")
       {:status 200
        :headers (merge cors-headers {"Content-Type" "application/json"})
        :body (as-> (edn-api/get-menu) $

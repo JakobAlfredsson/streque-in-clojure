@@ -1,6 +1,5 @@
 (ns view.app
-  (:require [reagent.core]
-            [view.events :as events]))
+  (:require [reagent.core]))
 
 (def general-border
   {:border "2px solid black"
@@ -66,17 +65,15 @@
 (defn app-component
   [state]
   (let [users (:users state)
-        menu (:menu state)]
+        menu (:menu state)
+        generate-user-card-component (fn [user]
+                             (user-card-component user menu))]
     [:div {:style {:display "flex"
                    :justify-content "center"
                    :text-align "center"}}
      [:div
       [:h1 {:id "header-id"}
        "Streque"]
-      ;; [:button {:on-click (fn [] (events/get-all-users! {}))}
-      ;;  "get-all-users"]
       [:div {:id "users" :style {:display "flex"
                                  :flex-direction "column"}}
-       (map (fn [user]
-              (user-card-component user menu))
-            users)]]]))
+       (map generate-user-card-component users)]]]))
