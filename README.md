@@ -1,6 +1,8 @@
 # Streque in Clojure
 
-## clj -M:fig:dev
+## clj -X:cljs:dev
+
+If Using Calva, choose cljs and calva-dev
 
 ## clj -X:build uber
 
