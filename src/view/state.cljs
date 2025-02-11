@@ -3,4 +3,5 @@
 (defonce state-atom (atom {}))
 
 (comment
-  @state-atom)
+  @state-atom
+  (reset! state-atom {}))

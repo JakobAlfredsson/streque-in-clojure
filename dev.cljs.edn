@@ -1,3 +1,4 @@
 ^{:watch-dirs ["src/view"]
+  :css-dirs ["resources/public/css"]
   :extra-main-files {:admin {:main view.admin-main}}}
 {:main view.main}
