@@ -1,6 +1,10 @@
-(ns view.app
-  (:require [reagent.core]
-            [view.css :as css]))
+(ns view.admin-app
+  (:require [reagent.core]))
+
+(def general-border
+  {:border "2px solid black"
+   :border-radius "4px"
+   :padding "2px"})
 
 (defn menu-item-component
   [menu-item]
@@ -41,7 +45,7 @@
   (let [element-id (str "user-component-" (:id user))]
     ^{:key element-id}
     [:div {:id element-id
-           :style (merge css/general-border
+           :style (merge general-border
                          {:margin-top "4px"
                           :height "150px"
                           :width "400px"
@@ -60,16 +64,4 @@
 
 (defn app-component
   [state]
-  (let [users (:users state)
-        menu (:menu state)
-        generate-user-card-component (fn [user]
-                             (user-card-component user menu))]
-    [:div {:style {:display "flex"
-                   :justify-content "center"
-                   :text-align "center"}}
-     [:div
-      [:h1 {:id "header-id"}
-       "Streque"]
-      [:div {:id "users" :style {:display "flex"
-                                 :flex-direction "column"}}
-       (map generate-user-card-component users)]]]))
+  [:h1 "Streque Admin"])
