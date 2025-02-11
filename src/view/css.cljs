@@ -37,10 +37,10 @@
   "0.4em")
 
 (def default-shadow
-  "0px 3px 3px 0px rgba(0,0,0,0.5)")
+  "0px 3px 3px 0px rgba(0,0,0,0.6)")
 
 (def pressed-down-shadow
-  "0px 1px 1px 0px rgba(0,0,0,0.5)")
+  "0px 1px 1px 0px rgba(0,0,0,0.6)")
 
 (def default-card
   {:background-color light-color
@@ -89,7 +89,7 @@
    :top 0
    :width "100%"
    :box-shadow default-shadow
-   :text-shadow "0px 3px 3px #000"})
+   :text-shadow default-shadow})
 
 (def general-footer
   {:height "5%"
