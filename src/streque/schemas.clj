@@ -71,7 +71,7 @@
 
                              {:user/id "u2"
                               :user/first-name "Anton"
-                              :user/last-name "Grensjö"
+                              :user/last-name "G"
                               :user/display-name "Thotte"
                               :user/balance 1500.0}]))
 
