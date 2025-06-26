@@ -24,7 +24,7 @@
    (map (fn [menu-item] (menu-item-component menu-item)) menu)])
 
 (defn profile-picture-component
-  ;Placeholder
+  ; TODO
   [picture]
   [:div {:style {:width "100%"
                  :flex-grow 9
@@ -40,6 +40,7 @@
                  :flex-grow 1}}
    display-name])
 
+; To be implemented
 (defn user-card-component
   [user menu]
   (let [element-id (str "user-component-" (:id user))]

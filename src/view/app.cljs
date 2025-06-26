@@ -8,11 +8,6 @@
   @style-atom
   (reset! style-atom {}))
 
-(defn footer
-  [_state]
-  [:div {:class "menu"
-         :style css/general-footer}])
-
 (defn menu-item-component
   [menu-item style args]
   (let [label (str (:name menu-item) " " (:price menu-item) "kr")
@@ -41,7 +36,7 @@
    (map (fn [menu-item] (menu-item-component menu-item style args)) menu)])
 
 (defn profile-picture-component
-  ;Placeholder
+  ; TODO
   [picture]
   [:div {:style {:width "100%"
                  :flex-grow 9
