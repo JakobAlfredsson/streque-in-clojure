@@ -10,12 +10,12 @@
 
                            {:user/id "u2"
                             :user/first-name "Anton"
-                            :user/last-name "Grensjö"
+                            :user/last-name "G"
                             :user/display-name "Thotte"
                             :user/balance 1500.0}
                            
                            {:menu-item/id "mi1"
-                            :menu-item/name "Öl"
+                            :menu-item/name "Läsk"
                             :menu-item/price 11.0}])
 
 ; --------------------------------------------------
