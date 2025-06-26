@@ -17,3 +17,7 @@ To build an uber-jar, run ```clj -X:build uber```. The resulting jar should be i
 
 ## Testing
 To run all unit-tests and generative tests, run ```clj -X:test```.
+
+
+
+![Early picture of streque view](https://github.com/user-attachments/assets/5a411ecc-5c85-46a0-8f1a-9576f6391c35)
