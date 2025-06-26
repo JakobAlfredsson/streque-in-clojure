@@ -13,6 +13,11 @@
   [_]
   (figwheel/-main "--build" "dev"))
 
+(defn initialize-fullstack-environment!
+  [_]
+  (initialize-backend-environment! {})
+  (initialize-frontend-environment! {}))
+
 (comment
   (initialize-backend-environment! {})
   (initialize-frontend-environment! {}))
